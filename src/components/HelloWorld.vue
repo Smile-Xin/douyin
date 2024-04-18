@@ -9,8 +9,8 @@
       <el-col :span="16">
         <div class="grid-content bg-purple">
 
-          <el-row>
-            <el-col v-for="item in this.videos" :key="item.rank" :span="8">
+          <el-row v-if="is_pc">
+            <el-col v-for="item in this.videos" :key="item.rank" :span="8" >
               <!-- 视频卡片 -->
               <el-card @click.native="goToVideo(item.share_url)" class="video-card"
                 :body-style="{ padding: '0px', height: '550px', cursor: 'pointer' }">
@@ -28,9 +28,27 @@
               </el-card>
 
             </el-col>
+          </el-row>
 
+          <el-row v-if!="is_pc">
+            <el-col v-for="item in this.videos" :key="item.rank" :span="24" >
+              <!-- 视频卡片 -->
+              <el-card @click.native="goToVideo(item.share_url)" class="video-card"
+                :body-style="{ padding: '0px', height: '550px', cursor: 'pointer' }">
+                <img :src="item.item_cover" class="image">
+                <div style="padding: 14px;" class="demo2">
+                  <div class="content">{{ item.title }}</div>
+                  <div class="footer">
+                    <div class="author">@{{ item.author }} </div>
+                    <div class="play-count"><i class="el-icon-view"></i>{{ item.play_count / 10000 | numFilter }}W
+                    </div>
+                    <div class="comment-count"><i class="el-icon-chat-dot-round"></i>{{ item.comment_count }}</div>
+                    <div class="digg-count"><span class="iconfont icon-dianzan"></span>{{ item.digg_count }}</div>
+                  </div>
+                </div>
+              </el-card>
 
-
+            </el-col>
           </el-row>
 
         </div>
@@ -45,6 +63,21 @@
 </template>
 
 <script>
+var IsPC = function () {
+  var userAgentInfo = navigator.userAgent;
+  var Agents = ["Android", "iPhone",
+    "SymbianOS", "Windows Phone",
+    "iPad", "iPod"];
+  var flag = true;
+  for (var v = 0; v < Agents.length; v++) {
+    if (userAgentInfo.indexOf(Agents[v]) > 0) {
+      flag = false;
+      break;
+    }
+  }
+  return flag;
+};
+
 var setCookie = function (name, value, hours) {
   if (hours !== 0) {     //当设置的时间等于0时，不设置expires属性，cookie在浏览器关闭后删除
     var expires = hours * 60 * 60 * 1000;
@@ -630,7 +663,8 @@ export default {
         client_key: "awdw1h68c5ep74gt",
         client_secret: "dc000180ae8e73c3cb83c317690cbcc2"
       },
-      token: ""
+      token: "",
+      is_pc: 0,
     }
   },
   name: 'HelloWorld',
@@ -642,9 +676,14 @@ export default {
     // console.log('created')
   },
   mounted() {
+    this.isPc()
     // console.log('mounted')
   },
   methods: {
+    isPc(){
+      console.log("isPc", IsPC());
+      this.is_pc = IsPC();
+    },
     // 点击视频卡片跳转到视频详情页
     goToVideo(share_url) {
       console.log(share_url)
@@ -681,7 +720,7 @@ export default {
           "access-token": this.token
         }
       })
-      console.log("111res",res)
+      console.log("111res", res)
       if (res.message === "success") {
         this.videos = res.data.list
         console.log("this.videos", this.videos)
@@ -737,7 +776,8 @@ export default {
   background: #e5e9f2;
 } */
 @font-face {
-  font-family: "iconfont"; /* Project id  */
+  font-family: "iconfont";
+  /* Project id  */
   src: url('iconfont.ttf?t=1713337141627') format('truetype');
 }
 
