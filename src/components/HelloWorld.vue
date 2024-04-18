@@ -665,7 +665,7 @@ export default {
       }
       console.log("no token")
       const { data: res } = await this.$http.post(this.token_url, this.body)
-      console.log(res)
+      console.log("get token res", res)
       this.token = res.data.access_token
       if (res.message === "success") {
         setCookie("token", res.data.access_token, 2)
@@ -681,7 +681,7 @@ export default {
           "access-token": this.token
         }
       })
-      console.log(res)
+      console.log("111res",res)
       if (res.message === "success") {
         this.videos = res.data.list
         console.log("this.videos", this.videos)

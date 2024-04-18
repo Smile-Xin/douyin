@@ -2,29 +2,22 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   publicPath: './', 
   transpileDependencies: true,
-   // 跨域配置
-   devServer: {
-    
-    // 跨域问题解决 代理（关键部分）
-    proxy: {
-      '/oauth': {
-        target: 'https://open.douyin.com', // 注意！此处为后端提供的真实接口
-        changeOrigin: true, // 允许跨域
+  // 跨域配置
+  devServer: {
+    open: true,
+    host: 'localhost',
+    port: 8080,
+    https: false,
+    //以上的ip和端口是我们本机的;下面为需要跨域的
+    proxy: { //配置跨域
+      '/api': {
+        target: 'https://open.douyin.com/', //这里后台的地址模拟的;应该填写你们真实的后台接口
+        ws: true,
+        changOrigin: true, //允许跨域
         pathRewrite: {
-          // 如果接口中是没有api的，那就直接置空，'^/api': ''，
-          // 如果接口中有api，那就得写成{'^/api':'/api'}
-          '^/oauth': '/oauth'
+          '^/api': '' //请求的时候使用这个api就可以
         }
-      },
-      '/data': {
-        target: 'https://open.douyin.com', // 注意！此处为后端提供的真实接口
-        changeOrigin: true, // 允许跨域
-        pathRewrite: {
-          // 如果接口中是没有api的，那就直接置空，'^/api': ''，
-          // 如果接口中有api，那就得写成{'^/api':'/api'}
-          '^/data': '/data'
-        }
-      },
+      }
     }
-  },
+  }
 })
